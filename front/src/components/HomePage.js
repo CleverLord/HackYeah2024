@@ -1,12 +1,12 @@
 import React from 'react';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
     const navigate = useNavigate();
 
     return (
-        <Container maxWidth="md">
+        <Container maxWidth="md" sx={{ backgroundColor: '#ffffff', padding: '30px', borderRadius: '10px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
             <Box
                 sx={{
                     display: 'flex',
@@ -18,8 +18,8 @@ function HomePage() {
                     gap: 4,
                 }}
             >
-                <Typography variant="h4" gutterBottom>
-                    Witaj w naszej aplikacji!
+                <Typography variant="h4" color="primary" gutterBottom>
+                    Welcome to Our Application
                 </Typography>
                 <Box
                     sx={{
@@ -29,55 +29,37 @@ function HomePage() {
                         gap: 4,
                     }}
                 >
-                    {/* Logowanie Box */}
-                    <Box
+                    <Button
                         onClick={() => navigate('/login')}
                         sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
                             width: '300px',
-                            height: '300px',
-                            backgroundColor: '#f5f5f5',
-                            borderRadius: '15px',
-                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                            cursor: 'pointer',
-                            transition: 'transform 0.2s ease-in-out',
+                            height: '150px',
+                            backgroundColor: '#1976d2', // Blue background
+                            color: '#ffffff', // White text
+                            borderRadius: '10px',
                             '&:hover': {
-                                transform: 'scale(1.05)',
-                                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                                backgroundColor: '#d32f2f', // Red on hover
                             },
                         }}
                     >
-                        <Typography variant="h6" color="primary">
-                            LOGOWANIE
-                        </Typography>
-                    </Box>
+                        <Typography variant="h6">LOG IN</Typography>
+                    </Button>
 
-                    {/* Chat Box */}
-                    <Box
+                    <Button
                         onClick={() => navigate('/chat')}
                         sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
                             width: '300px',
-                            height: '300px',
-                            backgroundColor: '#f5f5f5',
-                            borderRadius: '15px',
-                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                            cursor: 'pointer',
-                            transition: 'transform 0.2s ease-in-out',
+                            height: '150px',
+                            backgroundColor: '#1976d2',
+                            color: '#ffffff',
+                            borderRadius: '10px',
                             '&:hover': {
-                                transform: 'scale(1.05)',
-                                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                                backgroundColor: '#d32f2f', // Red on hover
                             },
                         }}
                     >
-                        <Typography variant="h6" color="primary">
-                            CHAT
-                        </Typography>
-                    </Box>
+                        <Typography variant="h6">CHAT</Typography>
+                    </Button>
                 </Box>
             </Box>
         </Container>
