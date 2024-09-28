@@ -24,7 +24,7 @@ services:
     ports:
       - "11434:11434"
     container_name: ollama
-    # command: ["ollama", "create", "Lexi-Llama-3-8B-Uncensored_Q8_0.gguf", "-f", "/hackyeah2024/RAG-System/models/Lexi-Llama-3-8B-Uncensored_Q8_0.gguf"]  # Adjusted the file path
+    entrypoint: ["/bin/bash", "/hackyeah2024/ollama-entrypoint.sh"]
 
 volumes:
   esdata:
