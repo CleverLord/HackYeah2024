@@ -1,0 +1,7 @@
+MODEL_NAME = "Lexi-Llama-3-8B-Uncensored_Q8_0:latest"
+
+ES_PORT = 9200
+ES_DISTANCE_STRATEGY = "COSINE"
+ES_INDEX_NAME = "rag"
+CONTEXT_CHAR_THRESHOLD = 4 * 1024
+CHUNKER_TYPE = "recursive"
