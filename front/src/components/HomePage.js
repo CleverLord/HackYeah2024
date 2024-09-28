@@ -1,30 +1,84 @@
 import React from 'react';
-import { Button, Container, Box } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
     const navigate = useNavigate();
 
     return (
-        <Container maxWidth="sm">
+        <Container maxWidth="md">
             <Box
-                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100vh',
+                    textAlign: 'center',
+                    gap: 4,
+                }}
             >
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate('/login')}
-                    sx={{ mb: 2 }}
+                <Typography variant="h4" gutterBottom>
+                    Witaj w naszej aplikacji!
+                </Typography>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-around',
+                        width: '100%',
+                        gap: 4,
+                    }}
                 >
-                    Logowanie
-                </Button>
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={() => navigate('/chat')}
-                >
-                    Chat
-                </Button>
+                    {/* Logowanie Box */}
+                    <Box
+                        onClick={() => navigate('/login')}
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: '300px',
+                            height: '300px',
+                            backgroundColor: '#f5f5f5',
+                            borderRadius: '15px',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                            cursor: 'pointer',
+                            transition: 'transform 0.2s ease-in-out',
+                            '&:hover': {
+                                transform: 'scale(1.05)',
+                                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                            },
+                        }}
+                    >
+                        <Typography variant="h6" color="primary">
+                            LOGOWANIE
+                        </Typography>
+                    </Box>
+
+                    {/* Chat Box */}
+                    <Box
+                        onClick={() => navigate('/chat')}
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: '300px',
+                            height: '300px',
+                            backgroundColor: '#f5f5f5',
+                            borderRadius: '15px',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                            cursor: 'pointer',
+                            transition: 'transform 0.2s ease-in-out',
+                            '&:hover': {
+                                transform: 'scale(1.05)',
+                                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                            },
+                        }}
+                    >
+                        <Typography variant="h6" color="primary">
+                            CHAT
+                        </Typography>
+                    </Box>
+                </Box>
             </Box>
         </Container>
     );
