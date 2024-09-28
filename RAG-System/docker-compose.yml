@@ -12,6 +12,25 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
 
+  ollama:
+    image: ollama/ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    volumes:
+      - ollama:/root/.ollama
+      - ../:/hackyeah2024  # Mount the parent HackYeah2024 directory using relative path
+    ports:
+      - "11434:11434"
+    runtime: nvidia
+    container_name: ollama
+    command: ["ollama", "create", "Lexi-Llama-3-8B-Uncensored_Q8_0.gguf", "-f", "/hackyeah2024/RAG-System/models/Lexi-Llama-3-8B-Uncensored_Q8_0.gguf"]  # Adjusted the file path
+
 volumes:
   esdata:
+    driver: local
+  ollama:
     driver: local
