@@ -8,7 +8,7 @@ Install ollama from https://ollama.com/download or by running
 
 Download `Lexi-Llama-3-8B-Uncensored_Q8_0.gguf` model from https://huggingface.co/Orenguteng/Llama-3-8B-Lexi-Uncensored-GGUF/tree/main to ./models directory and then run command below to create Ollama model:
 ```sh
-ollama create Lexi-Llama-3-8B-Uncensored_Q8_0.gguf -f ./models/Lexi-Llama-3-8B-Uncensored_Q8_0.gguf
+ollama create Lexi-Llama-3-8B-Uncensored_Q8_0.gguf -f ./models/Lexi-Llama-3-8B-Uncensored_Q8_0
 ```
 
 ## ElasticSearch db prep:
