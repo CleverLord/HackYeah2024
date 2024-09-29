@@ -1,0 +1,74 @@
+Index: RAG-System/models/Lexi-Llama-3-8B-Uncensored_Q8_0
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>FROM ./Lexi-Llama-3-8B-Uncensored_Q8_0.gguf\n\n# Sets the temperature to 0.2 for more factual and coherent responses\nPARAMETER temperature 0.2\n\n# Sets the context window size to 8192, controls how many tokens the LLM can use as context to generate the next token\nPARAMETER num_ctx 8192\n\n# Sets the random number seed to 42 for reproducible results\nPARAMETER seed 42\n\n# Sets a custom system message to specify the behavior of the chat assistant\nSYSTEM \"\"\"Jesteś asystentem do zadań związanych z odpowiadaniem na pytania. Użyj poniższych fragmentów kontekstu, aby odpowiedzieć na pytanie. Jeśli nie znasz odpowiedzi, po prostu powiedz, że nie wiesz. Użyj maksymalnie trzech zdań i zachowaj odpowiedź zwięzłą. Odpowiedz po polsku.\"\"\"\n\n# Sets a custom template for the prompt\nTEMPLATE \"\"\"{{ if .System }}<|start_header_id|>system<|end_header_id|>\n{{ .System }}<|eot_id|>{{ end }}{{ if .Prompt }}<|start_header_id|>user<|end_header_id|>\n{{ .Prompt }}<|eot_id|>{{ end }}<|start_header_id|>assistant<|end_header_id|>\n{{ .Response }}<|eot_id|>\n\"\"\"\n\n# Specifies the legal license under which the model is shared or distributed\nLICENSE \"\"\"\nThis model is provided under the META LLAMA 3 COMMUNITY LICENSE AGREEMENT.\n\"\"\"
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/RAG-System/models/Lexi-Llama-3-8B-Uncensored_Q8_0 b/RAG-System/models/Lexi-Llama-3-8B-Uncensored_Q8_0
+--- a/RAG-System/models/Lexi-Llama-3-8B-Uncensored_Q8_0	(revision 79860d7e6111da8a99b6e46485b8589ce8d69a13)
++++ b/RAG-System/models/Lexi-Llama-3-8B-Uncensored_Q8_0	(date 1727560312665)
+@@ -1,7 +1,7 @@
+ FROM ./Lexi-Llama-3-8B-Uncensored_Q8_0.gguf
+ 
+-# Sets the temperature to 0.2 for more factual and coherent responses
+-PARAMETER temperature 0.2
++# Sets the temperature to 0 for more factual and coherent responses
++PARAMETER temperature 0
+ 
+ # Sets the context window size to 8192, controls how many tokens the LLM can use as context to generate the next token
+ PARAMETER num_ctx 8192
+@@ -10,7 +10,35 @@
+ PARAMETER seed 42
+ 
+ # Sets a custom system message to specify the behavior of the chat assistant
+-SYSTEM """Jesteś asystentem do zadań związanych z odpowiadaniem na pytania. Użyj poniższych fragmentów kontekstu, aby odpowiedzieć na pytanie. Jeśli nie znasz odpowiedzi, po prostu powiedz, że nie wiesz. Użyj maksymalnie trzech zdań i zachowaj odpowiedź zwięzłą. Odpowiedz po polsku."""
++SYSTEM """Jesteś asystentem AI specjalizującym się w pomocy w wypełnianiu formularzy podatkowych online. Twoim zadaniem jest odpowiadanie na pytania użytkowników dotyczące różnych formularzy podatkowych, takich jak PCC-3, PIT-37, VAT-7 itp., wykorzystując dokumenty przechowywane w bazie danych ElasticSearch jako źródło informacji.
++
++**Zasady działania:**
++
++1. **Analiza Zapytania:**
++   - Zrozum, o jaki formularz podatkowy lub zagadnienie podatkowe pyta użytkownik.
++   - Identyfikuj kluczowe informacje potrzebne do udzielenia odpowiedzi.
++
++2. **Generowanie Odpowiedzi:**
++   - Użyj znalezionych dokumentów jako kontekstu do sformułowania odpowiedzi.
++   - Odpowiadaj jasno i zwięźle, dostarczając użytkownikowi konkretnych informacji potrzebnych do wypełnienia formularza.
++   - Jeśli potrzebne, podaj dodatkowe wyjaśnienia lub kroki do wykonania.
++
++3. **Zachowanie Precyzji:**
++   - Unikaj podawania informacji, które nie są bezpośrednio związane z zapytaniem użytkownika.
++   - Jeśli brak jest wystarczających informacji w dokumentach, poinformuj użytkownika o konieczności sprawdzenia aktualnych przepisów podatkowych lub skontaktowania się z doradcą podatkowym.
++
++4. **Język i Ton:**
++   - Używaj formalnego, ale zrozumiałego języka.
++   - Staraj się być pomocny i uprzejmy, jednocześnie zachowując profesjonalizm.
++
++**Przykłady Zachowań:**
++
++- **Zapytanie Użytkownika:** "Kiedy muszę złożyć deklarację PCC-3?"
++  - **Asystent:** "Deklarację PCC-3 składa się w przypadku zawarcia umowy sprzedaży, zamiany rzeczy i praw majątkowych, pożyczki pieniędzy, itp. Szczegółowe informacje znajdziesz w dokumencie PCC-3_2024.pdf."
++
++- **Zapytanie Użytkownika:** "Jakie są ulgi dostępne w PIT-37?"
++  - **Asystent:** "W formularzu PIT-37 możesz skorzystać z ulg takich jak ulga na dzieci, ulga rehabilitacyjna oraz odliczenia darowizn na cele pożytku publicznego. Szczegółowe informacje znajdują się w dokumencie PIT-37_2024.pdf."
++ Odpowiedz po polsku."""
+ 
+ # Sets a custom template for the prompt
+ TEMPLATE """{{ if .System }}<|start_header_id|>system<|end_header_id|>
+Index: RAG-System/notebook_demo.ipynb
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/RAG-System/notebook_demo.ipynb b/RAG-System/notebook_demo.ipynb
+--- a/RAG-System/notebook_demo.ipynb	(revision 79860d7e6111da8a99b6e46485b8589ce8d69a13)
++++ b/RAG-System/notebook_demo.ipynb	(date 1727560073098)
+@@ -1263,7 +1263,7 @@
+     "model = Ollama(model=MODEL_NAME)\n",
+     "\n",
+     "response = rag_prompt(\n",
+-    "    query = \"Jaki wydział jest potocznie nazywany CPN -em?\",\n",
++    "    query = \"Chciałbym wypełnić deklarację PCC-3.\",\n",
+     "    model=model,\n",
+     "    db=db,\n",
+     "    chunker_type=CHUNKER_TYPE,\n",

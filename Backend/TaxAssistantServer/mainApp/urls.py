@@ -1,7 +1,8 @@
 from django.urls import path
 from . import views
-
+from django.contrib import admin
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('users/', views.UserListCreate.as_view(), name='user-list-create'),
     path('users/<int:pk>/', views.UserRetrieveUpdateDestroy.as_view(), name='user-retrieve-update-destroy'),
     path('sessions/', views.SessionListCreate.as_view(), name='session-list-create'),
@@ -13,4 +14,5 @@ urlpatterns = [
     # app specific endpoints
     path('start-conversation/', views.StartConversation.as_view(), name='start-conversation'),
     path('conversation/', views.ReceiveMessage.as_view(), name='conversation'),
+    path('get-template/', views.GetLastPartiallyFilledTemplate.as_view(), name='get-template'),
 ]   

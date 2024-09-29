@@ -76,3 +76,38 @@ class ReceiveMessage(APIView):
         UserMessage.objects.create(session=session, body=body, created_at=timezone.now())
         ChatBotMessage.objects.create(session=session, verdict_body='mock verdict', partially_filled_template='mock template', response_body=chatbot_mock_response, created_at=timezone.now())
         return Response({'response': chatbot_mock_response}, status=status.HTTP_200_OK)
+
+
+# create an endpoint for returning last partially_filled_template as it is ready to be sent to the user
+
+from rest_framework.renderers import JSONRenderer
+from rest_framework_xml.renderers import XMLRenderer  # Import XMLRenderer
+
+from django.http import HttpResponse
+
+class GetLastPartiallyFilledTemplate(APIView):
+    # Only JSONRenderer is needed since XML is handled separately
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request):
+        session_id = request.query_params.get('session_id', None)
+        if not session_id:
+            return Response({'error': 'Missing session_id'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            session = Session.objects.get(session_id=session_id)
+        except Session.DoesNotExist:
+            return Response({'error': 'Session not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        chatbot_message = ChatBotMessage.objects.filter(session=session).last()
+        if not chatbot_message:
+            return Response({'error': 'No chatbot messages for this session'}, status=status.HTTP_404_NOT_FOUND)
+
+        partially_filled_template = chatbot_message.partially_filled_template
+
+        # Determine if the client expects XML
+        accept_header = request.headers.get('Accept', '')
+        if 'application/xml' in accept_header:
+            return HttpResponse(partially_filled_template, content_type='application/xml')
+        else:
+            return Response({'partially_filled_template': partially_filled_template}, status=status.HTTP_200_OK)
