@@ -9,6 +9,7 @@ djangorestframework = "*"
 environs = "*"
 django-cors-headers = "*"
 langchain-community = "*"
+djangorestframework-xml = "*"
 
 [dev-packages]
 
