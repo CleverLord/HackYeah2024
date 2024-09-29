@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Session, UserMessage, ChatBotMessage
+from .models import User, Session, UserMessage, ChatBotMessage, FormSuitability, FormSchema
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,4 +25,14 @@ class ChatBotMessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ChatBotMessage
+        fields = '__all__'
+
+class FormSuitabilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FormSuitability
+        fields = '__all__'
+
+class FormSchemaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FormSchema
         fields = '__all__'

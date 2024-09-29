@@ -42,3 +42,8 @@ class TestChatBotMessageListCreate(TestCase):
     def test_chat_bot_message_list_create(self):
         response = self.client.get('/chatbot-messages/')
         self.assertEqual(response.status_code, 200)
+
+class TestStartConversation(TestCase):
+    def test_start_conversation(self):
+        response = self.client.get('/start-conversation/')
+        self.assertEqual(response.status_code, 201)
