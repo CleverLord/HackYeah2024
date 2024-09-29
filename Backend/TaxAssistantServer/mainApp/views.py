@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import User, Session, UserMessage, ChatBotMessage
-from .serializers import UserSerializer, SessionSerializer, UserMessageSerializer, ChatBotMessageSerializer
+from .models import User, Session, UserMessage, ChatBotMessage, FormSuitability, FormSchema
+from .serializers import UserSerializer, SessionSerializer, UserMessageSerializer, ChatBotMessageSerializer, FormSuitabilitySerializer, FormSchemaSerializer
 
 # Create your views here for debuging database
 class UserListCreate(generics.ListCreateAPIView):
@@ -66,9 +66,11 @@ chatbot_mock_response = 'Hello, I am a mock chatbot. I am here to help you with 
 class PostMessage(APIView):
     def post(self, request):
         session_id = request.data.get('session_id', None)
-        body = request.data.get('body', None)
-        if not session_id or not body:
-            return Response({'error': 'Missing session_id or body'}, status=status.HTTP_400_BAD_REQUEST)
+        body = request.data.get('message', None)
+        if not session_id:
+            return Response({'error': 'Missing session_id'}, status=status.HTTP_400_BAD_REQUEST)
+        if not body:
+            return Response({'error': 'Missing body'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             session = Session.objects.get(session_id=session_id)
         except Session.DoesNotExist:
@@ -107,17 +109,15 @@ class GetConversationHistory(APIView):
         all_messages.sort(key=lambda x: x.created_at)
         serialized_messages = MessageSerializer(all_messages, many=True)
         return Response(serialized_messages.data, status=status.HTTP_200_OK)
-    
+
+
+### CHATBOT stuff
+#create simple function AskChatbot that will take message as an argument and return chatbot response
+def AskChatbot(message):
+    response_text=model.invoke(message)
+    return response_text
 
 # create an endpoint that will talk to the chatbot
-# we talk to the chatbot by replacing CONTENT in the template with the message we want to send
-template = """url http://localhost:11434/api/chat -d '{
-  "model": "llama3.2",
-  "messages": [
-    { "role": "user", "content": "CONTENT" }
-  ]
-}'"""
-chatbot_url = 'http://localhost:11434/api/chat'
 from langchain_community.llms.ollama import Ollama
 MODEL_NAME="Lexi-Llama-3-8B-Uncensored_Q8_0.gguf"
 model = Ollama(model=MODEL_NAME)
@@ -127,9 +127,34 @@ class PostMessageToChatBot(APIView):
         message = request.data.get('message', None)
         if not message:
             return Response({'error': 'Missing message'}, status=status.HTTP_400_BAD_REQUEST)
-        chatbot_request = template.replace('CONTENT', message)
-        response_text=model.invoke(chatbot_request)
+        response_text=model.invoke(message)
         return Response({'response': response_text}, status=status.HTTP_200_OK)
+
+#create a function that will go through all formsSutaibility objects and will ask chat if the message user provided suits the form
+# the function will return true if any form is suitable
+# the function will return false if no form is suitable
+def CheckFormSutaibility(message):
+    result=""
+    for form in FormSuitability.objects.all():
+        message="Czy formularz "+form.form_name+" jest odpowiedni dla osoby, która opisuje swoją sytuację następująco: "+message+" uwzględniając że ten formularz jest odpowiedni w takich sytuacjach: "+form.condition
+        message+="Odpowiedz jednym słowem: tak/nie"
+        response_text=model.invoke(message)
+        #check if response is other than yes or no
+        if response_text.lower() not in ['yes', 'no']:
+            result+="Dla formularza "+form.form_name+" odpowiedź nie była jednoznaczna. "
+        if response_text.lower() == 'yes':
+            result+="Formularz "+form.form_name+" jest odpowiedni. "
+        else:
+            result+="Formularz "+form.form_name+" nie jest odpowiedni. "
+    return result
+
+class CheckFormSutabilityEndpoint(APIView):
+    def post(self, request):
+        message = request.data.get('body', None)
+        if not message:
+            return Response({'error': 'Missing message'}, status=status.HTTP_400_BAD_REQUEST)
+        result=CheckFormSutaibility(message)
+        return Response({'response': result}, status=status.HTTP_200_OK)
 
 # this time create a true endpoint for starting a conversation
 # the endpoint should be a post request that will take session_id as a parameter
