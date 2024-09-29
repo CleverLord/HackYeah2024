@@ -136,24 +136,28 @@ class PostMessageToChatBot(APIView):
 def CheckFormSutaibility(message):
     result=""
     for form in FormSuitability.objects.all():
-        message="Czy formularz "+form.form_name+" jest odpowiedni dla osoby, która opisuje swoją sytuację następująco: "+message+" uwzględniając że ten formularz jest odpowiedni w takich sytuacjach: "+form.condition
+        message="Czy formularz "+form.form_name+" jest odpowiedni dla osoby, która opisuje swoją sytuację następująco: \""+message+"\" uwzględniając że ten formularz jest odpowiedni w takich sytuacjach: "+form.condition
         message+="Odpowiedz jednym słowem: tak/nie"
+        # print(message)
         response_text=model.invoke(message)
+        short_response_text=response_text[0:3]
+        print("Sytuacja: "+ message+"\n", "Short response: "+short_response_text+"\n", "Response: "+response_text+"\n\n")
         #check if response is other than yes or no
-        if response_text.lower() not in ['yes', 'no']:
-            result+="Dla formularza "+form.form_name+" odpowiedź nie była jednoznaczna. "
-        if response_text.lower() == 'yes':
+        if short_response_text.lower() not in ['tak', 'nie']:
+            result+="Dla formularza "+form.form_name+" odpowiedź nie była jednoznaczna. Chat odpowiada: "+response_text+". "
+        if short_response_text.lower() == 'tak':
             result+="Formularz "+form.form_name+" jest odpowiedni. "
-        else:
+        if short_response_text.lower() == 'nie':
             result+="Formularz "+form.form_name+" nie jest odpowiedni. "
+    print(result)
     return result
 
-class CheckFormSutabilityEndpoint(APIView):
+class CheckFormSuitability(APIView):
     def post(self, request):
-        message = request.data.get('body', None)
+        message = request.data.get('message', None)
         if not message:
             return Response({'error': 'Missing message'}, status=status.HTTP_400_BAD_REQUEST)
-        result=CheckFormSutaibility(message)
+        result = CheckFormSutaibility(message)
         return Response({'response': result}, status=status.HTTP_200_OK)
 
 # this time create a true endpoint for starting a conversation
