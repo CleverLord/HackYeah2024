@@ -18,9 +18,6 @@ function HomePage() {
                     gap: 4,
                 }}
             >
-                <Typography variant="h4" color="primary" gutterBottom>
-                    Welcome to Our Application
-                </Typography>
                 <Box
                     sx={{
                         display: 'flex',

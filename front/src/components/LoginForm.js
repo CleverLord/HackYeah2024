@@ -3,6 +3,8 @@ import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Lin
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Google as GoogleIcon, Facebook as FacebookIcon } from '@mui/icons-material';
+import { useNavigate } from "react-router-dom";
+import axios from 'axios'; // Import axios
 
 const theme = createTheme({
     palette: {
@@ -22,13 +24,28 @@ const theme = createTheme({
 });
 
 export default function SignIn() {
+    const navigate = useNavigate();
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
+
+        // Prepare user data to be sent in the JSON
+        const userData = {
             email: data.get('email'),
             password: data.get('password'),
-        });
+        };
+
+        // Sending data to the backend
+        axios.post('http://192.168.137.1:8000/start-conversation/', userData)
+            .then((response) => {
+                console.log('Data sent successfully:', response.data);
+                // Navigate to the chat page after successful submission
+                navigate('/chat');
+            })
+            .catch((error) => {
+                console.error('Error sending data:', error);
+            });
     };
 
     return (
@@ -98,7 +115,7 @@ export default function SignIn() {
                             sx={{ color: '#333' }}
                         />
                         <Button
-                            type="submit"
+                            type="submit" // Let form handle submission
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2', color: '#ffffff' }}
@@ -117,41 +134,6 @@ export default function SignIn() {
                                 </Link>
                             </Grid>
                         </Grid>
-                        <Typography variant="body2" align="center" sx={{ mt: 2, color: '#333' }}>
-                            or
-                        </Typography>
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            startIcon={<GoogleIcon />}
-                            sx={{
-                                mt: 1,
-                                mb: 1,
-                                color: '#333',
-                                borderColor: '#cccccc',
-                                '&:hover': {
-                                    borderColor: '#d32f2f', // Red border on hover
-                                },
-                            }}
-                        >
-                            Sign in with Google
-                        </Button>
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            startIcon={<FacebookIcon />}
-                            sx={{
-                                mt: 1,
-                                mb: 2,
-                                color: '#333',
-                                borderColor: '#cccccc',
-                                '&:hover': {
-                                    borderColor: '#d32f2f', // Red border on hover
-                                },
-                            }}
-                        >
-                            Sign in with Facebook
-                        </Button>
                     </Box>
                 </Box>
             </Container>
