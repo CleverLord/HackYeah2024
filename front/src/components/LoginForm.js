@@ -1,58 +1,69 @@
-import React from 'react';
-import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, Grid, Box, Typography, Container } from '@mui/material';
+import React, { useState } from 'react';
+import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, Grid, Box, Typography, Container, Alert } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Google as GoogleIcon, Facebook as FacebookIcon } from '@mui/icons-material';
-import { useNavigate } from "react-router-dom";
-import axios from 'axios'; // Import axios
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#1976d2', // Blue for main accents
+            main: '#1976d2',
         },
         secondary: {
-            main: '#d32f2f', // Red accent for subtle highlights
+            main: '#d32f2f',
         },
         background: {
-            default: '#ffffff', // White background
+            default: '#ffffff',
         },
         text: {
-            primary: '#333333', // Dark text for readability
+            primary: '#333333',
         },
     },
 });
 
 export default function SignIn() {
     const navigate = useNavigate();
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+    const [loginError, setLoginError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        // Prepare user data to be sent in the JSON
+        const email = data.get('email');
+        const password = data.get('password');
+
+        // Basic validation
+        setEmailError(!email);
+        setPasswordError(!password);
+
+        if (!email || !password) {
+            setErrorMessage('Both email and password are required.');
+            setLoginError(true);
+            return;
+        }
+
         const userData = {
-            email: data.get('email'),
-            password: data.get('password'),
+            email,
+            password,
         };
 
         try {
-            // First, send the login request to get the session-id
-            const response = await axios.post('http://192.168.137.1:8000/start-conversation/', userData);
+            // Send request to gather session-id
+            const response = await axios.get('http://192.168.137.1:8000/start-conversation/', userData);
 
-            // Extract session-id from the response
             const sessionId = response.data['session-id'];
-
-            // Save the session-id in localStorage to use it in the chat page
             localStorage.setItem('session-id', sessionId);
 
             console.log('Session ID:', sessionId);
-
-            // Navigate to the chat page after successful login
             navigate('/chat');
-
         } catch (error) {
-            console.error('Error during login or fetching session-id:', error);
+            console.error('Error during login:', error);
+            setErrorMessage('Invalid credentials or server error.');
+            setLoginError(true);
         }
     };
 
@@ -66,19 +77,22 @@ export default function SignIn() {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        padding: '20px',
-                        backgroundColor: '#ffffff', // White form background
-                        borderRadius: '10px',
-                        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // Soft shadow
+                        padding: '30px',
+                        backgroundColor: '#f9f9f9',
+                        borderRadius: '15px',
+                        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
                     }}
                 >
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5" sx={{ color: '#333' }}>
-                        Sign in
+                        Zaloguj się
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+
+                    {loginError && <Alert severity="error" sx={{ mt: 2, width: '100%' }}>{errorMessage}</Alert>}
+
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
                         <TextField
                             margin="normal"
                             required
@@ -88,14 +102,16 @@ export default function SignIn() {
                             name="email"
                             autoComplete="email"
                             autoFocus
-                            InputLabelProps={{ style: { color: '#333' } }} // Darker label color
+                            error={emailError}
+                            helperText={emailError && "Email is required"}
+                            InputLabelProps={{ style: { color: '#333' } }}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
-                                    '& fieldset': { borderColor: '#cccccc' }, // Lighter border for input
-                                    '&:hover fieldset': { borderColor: '#d32f2f' }, // Red hover effect
-                                    '&.Mui-focused fieldset': { borderColor: '#d32f2f' }, // Red on focus
+                                    '& fieldset': { borderColor: emailError ? '#d32f2f' : '#cccccc' },
+                                    '&:hover fieldset': { borderColor: '#1976d2' },
+                                    '&.Mui-focused fieldset': { borderColor: '#1976d2' },
                                 },
-                                input: { color: '#333' }, // Dark input text
+                                input: { color: '#333' },
                             }}
                         />
                         <TextField
@@ -107,12 +123,14 @@ export default function SignIn() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            error={passwordError}
+                            helperText={passwordError && "Password is required"}
                             InputLabelProps={{ style: { color: '#333' } }}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
-                                    '& fieldset': { borderColor: '#cccccc' },
-                                    '&:hover fieldset': { borderColor: '#d32f2f' }, // Red hover effect
-                                    '&.Mui-focused fieldset': { borderColor: '#d32f2f' }, // Red on focus
+                                    '& fieldset': { borderColor: passwordError ? '#d32f2f' : '#cccccc' },
+                                    '&:hover fieldset': { borderColor: '#1976d2' },
+                                    '&.Mui-focused fieldset': { borderColor: '#1976d2' },
                                 },
                                 input: { color: '#333' },
                             }}
@@ -123,21 +141,32 @@ export default function SignIn() {
                             sx={{ color: '#333' }}
                         />
                         <Button
-                            type="submit" // Let form handle submission
+                            type="submit"
                             fullWidth
                             variant="contained"
-                            sx={{ mt: 3, mb: 2, backgroundColor: '#1976d2', color: '#ffffff' }}
+                            sx={{
+                                mt: 3,
+                                mb: 2,
+                                backgroundColor: '#1976d2',
+                                color: '#ffffff',
+                                borderRadius: '30px',
+                                padding: '10px 20px',
+                                fontSize: '16px',
+                                '&:hover': {
+                                    backgroundColor: '#115293',
+                                },
+                            }}
                         >
-                            Sign in
+                            Sign In
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link href="#" variant="body2" sx={{ color: '#d32f2f' }}>
+                                <Link href="#" variant="body2" sx={{ color: '#1976d2' }}>
                                     Forgot password?
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2" sx={{ color: '#d32f2f' }}>
+                                <Link href="#" variant="body2" sx={{ color: '#1976d2' }}>
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>

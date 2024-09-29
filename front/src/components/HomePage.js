@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Typography, Button } from '@mui/material';
+import { Box, Container, Typography, Button, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
@@ -18,6 +18,7 @@ function HomePage() {
                     gap: 4,
                 }}
             >
+                {/* Header Section */}
                 <Box
                     sx={{
                         display: 'flex',
