@@ -37,3 +37,22 @@ class ChatBotMessage(models.Model):
 
     def __str__(self):
         return f"ChatBot Message {self.message_id} for Session {self.session}"
+
+#create a class that will hold information whether a certain form is suitable for a user case
+# the class should have a form name as a string, and a condition string that will be used to evaluate if the form is suitable
+class FormSuitability(models.Model):
+    form_name = models.CharField(max_length=255)
+    condition = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"FormSuitability {self.form_name} {self.condition}"
+    
+#create a class that will hold xml schema for a form
+class FormSchema(models.Model):
+    form_name = models.CharField(max_length=255)
+    schema = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"FormSchema {self.form_name}"

@@ -12,5 +12,6 @@ urlpatterns = [
     path('chatbot-messages/<int:pk>/', views.ChatBotMessageRetrieveUpdateDestroy.as_view(), name='chat-bot-message-retrieve-update-destroy'),
     # app specific endpoints
     path('start-conversation/', views.StartConversation.as_view(), name='start-conversation'),
-    path('conversation/', views.ReceiveMessage.as_view(), name='conversation'),
+    path('conversation/', views.PostMessage.as_view(), name='conversation'),
+    path('conversation-history/', views.GetConversationHistory.as_view(), name='conversation-history'),
 ]   
