@@ -28,20 +28,6 @@ function Header() {
                     onClick={() => navigate("/chat")}// Adjust size as necessary
                 />
             </Box>
-
-            {/* "TaxYeah" text in the center and slightly higher */}
-            <Typography
-                variant="h4"
-                sx={{
-                    position: 'absolute',
-                    left: '50%',
-                    transform: 'translateX(-50%) translateY(-20%)', // Move slightly up
-                    fontWeight: 'bold',
-                    color: '#333', // Adjust color as needed
-                }}
-            >
-                TaxYeah
-            </Typography>
         </Box>
     );
 }

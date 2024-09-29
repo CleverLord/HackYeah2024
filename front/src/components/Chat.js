@@ -8,10 +8,9 @@ function Chat() {
     const [inputMessage, setInputMessage] = useState('');
 
     // API Endpoints
-    const conversationEndpoint = 'http://10.250.194.23:8000/conversation/';
-    const responseEndpoint = 'http://10.250.194.23:8000/conversation-response/';
+    const conversationEndpoint = 'http://192.168.137.1:8000/conversation/';
 
-    // Function to send user message and retrieve real response from the backend
+    // Function to send user message and use session-id
     const handleSendMessage = async () => {
         if (inputMessage.trim() === '') return;
 
@@ -25,35 +24,34 @@ function Chat() {
         setInputMessage(''); // Clear input field
 
         try {
-            // Send the user's message to the backend conversation endpoint
-            await axios.post(conversationEndpoint, { message: inputMessage });
+            // Get session-id from localStorage
+            const sessionId = localStorage.getItem('session-id');
 
-            // After sending the message, fetch the real response from the backend
-            const response = await axios.get(responseEndpoint);
-
-            // Handle the response from the backend and add it to the chat
-            const responseMessage = {
-                text: response.data.message || 'This is the response from the backend.',
-                sender: 'system', // The system or visitor
-                time: new Date().toLocaleTimeString(),
+            // Prepare the formatted request body
+            const requestBody = {
+                session_id: sessionId,
+                body: inputMessage, // The message content
             };
-            setMessages((prevMessages) => [...prevMessages, responseMessage]);
+
+            // Send the message to the conversation endpoint
+            await axios.post(conversationEndpoint, requestBody);
+
         } catch (error) {
             console.error('Error communicating with the backend:', error);
         }
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 2, backgroundColor: '#f5f5f5', borderRadius: '10px', height: '80vh', display: 'flex', flexDirection: 'column', padding: '0', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
+        <Container maxWidth="md" sx={{ mt: 2, backgroundColor: '#ffffff', borderRadius: '10px', height: '80vh', display: 'flex', flexDirection: 'column', padding: '0', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
 
-            {/* Header */}
-            <Box sx={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: '#ffffff', borderBottom: '1px solid #ccc' }}>
+            {/* Chat Header */}
+            <Box sx={{ display: 'flex', alignItems: 'center', padding: '15px', backgroundColor: '#f4f4f4', borderBottom: '1px solid #cccccc' }}>
                 <Avatar src="https://i.pravatar.cc/40?img=1" alt="Visitor" sx={{ marginRight: '10px' }} />
-                <Typography variant="h6">Visitor</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#005f99' }}>Visitor</Typography>
             </Box>
 
             {/* Chat Messages Container */}
-            <Box sx={{ flex: 1, overflowY: 'scroll', padding: '20px', backgroundColor: '#f0f0f0' }}>
+            <Box sx={{ flex: 1, overflowY: 'scroll', padding: '20px', backgroundColor: '#f5f5f5' }}>
                 {messages.map((msg, index) => (
                     <Box
                         key={index}
@@ -70,7 +68,7 @@ function Chat() {
                                 maxWidth: '60%',
                                 padding: '10px 15px',
                                 borderRadius: '15px',
-                                backgroundColor: msg.sender === 'user' ? '#1976d2' : '#ffffff',
+                                backgroundColor: msg.sender === 'user' ? '#005f99' : '#ffffff',
                                 color: msg.sender === 'user' ? '#fff' : '#000',
                                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
                             }}
@@ -87,7 +85,7 @@ function Chat() {
             </Box>
 
             {/* Input Field and Send Button */}
-            <Box sx={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: '#ffffff', borderTop: '1px solid #ccc' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', padding: '15px', backgroundColor: '#f4f4f4', borderTop: '1px solid #cccccc' }}>
                 <TextField
                     fullWidth
                     variant="outlined"
@@ -95,9 +93,16 @@ function Chat() {
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()} // Send message on Enter key
-                    sx={{ mr: 2 }}
+                    sx={{
+                        mr: 2,
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': { borderColor: '#cccccc' },
+                            '&:hover fieldset': { borderColor: '#005f99' },
+                            '&.Mui-focused fieldset': { borderColor: '#005f99' },
+                        },
+                    }}
                 />
-                <IconButton color="primary" onClick={handleSendMessage}>
+                <IconButton color="primary" onClick={handleSendMessage} sx={{ padding: '10px' }}>
                     <SendIcon />
                 </IconButton>
             </Box>
