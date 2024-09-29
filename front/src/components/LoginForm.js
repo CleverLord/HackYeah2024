@@ -89,7 +89,7 @@ export default function SignIn() {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
-                        Log in to your account
+                        Zaloguj sie do swojego konta
                     </Typography>
 
                     {/* Error alert for login issues */}
@@ -102,7 +102,7 @@ export default function SignIn() {
                     {/* Form begins here */}
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ width: '100%' }}>
                         <Typography variant="body1" gutterBottom sx={{ fontWeight: 'bold', color: '#005f99' }}>
-                            Email Address
+                            Adres email
                         </Typography>
                         <TextField
                             margin="normal"
@@ -123,7 +123,7 @@ export default function SignIn() {
                             }}
                         />
                         <Typography variant="body1" gutterBottom sx={{ fontWeight: 'bold', color: '#005f99', mt: 2 }}>
-                            Password
+                            Hasło
                         </Typography>
                         <TextField
                             margin="normal"
@@ -148,7 +148,7 @@ export default function SignIn() {
                         {/* Remember Me Checkbox */}
                         <FormControlLabel
                             control={<Checkbox value="remember" sx={{ color: '#005f99' }} />}
-                            label="Remember me"
+                            label="Zapamiętaj mnie"
                             sx={{ color: '#333' }}
                         />
 
@@ -169,7 +169,7 @@ export default function SignIn() {
                                 },
                             }}
                         >
-                            Log in
+                            Zaloguj się
                         </Button>
                     </Box>
                 </Paper>

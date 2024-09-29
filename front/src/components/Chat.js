@@ -42,16 +42,16 @@ function Chat() {
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 2, backgroundColor: '#f5f5f5', borderRadius: '10px', height: '80vh', display: 'flex', flexDirection: 'column', padding: '0', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
+        <Container maxWidth="md" sx={{ mt: 2, backgroundColor: '#ffffff', borderRadius: '10px', height: '80vh', display: 'flex', flexDirection: 'column', padding: '0', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
 
             {/* Chat Header */}
-            <Box sx={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: '#ffffff', borderBottom: '1px solid #ccc' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', padding: '15px', backgroundColor: '#f4f4f4', borderBottom: '1px solid #cccccc' }}>
                 <Avatar src="https://i.pravatar.cc/40?img=1" alt="Visitor" sx={{ marginRight: '10px' }} />
-                <Typography variant="h6">Visitor</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#005f99' }}>Visitor</Typography>
             </Box>
 
             {/* Chat Messages Container */}
-            <Box sx={{ flex: 1, overflowY: 'scroll', padding: '20px', backgroundColor: '#f0f0f0' }}>
+            <Box sx={{ flex: 1, overflowY: 'scroll', padding: '20px', backgroundColor: '#f5f5f5' }}>
                 {messages.map((msg, index) => (
                     <Box
                         key={index}
@@ -68,7 +68,7 @@ function Chat() {
                                 maxWidth: '60%',
                                 padding: '10px 15px',
                                 borderRadius: '15px',
-                                backgroundColor: msg.sender === 'user' ? '#1976d2' : '#ffffff',
+                                backgroundColor: msg.sender === 'user' ? '#005f99' : '#ffffff',
                                 color: msg.sender === 'user' ? '#fff' : '#000',
                                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
                             }}
@@ -85,7 +85,7 @@ function Chat() {
             </Box>
 
             {/* Input Field and Send Button */}
-            <Box sx={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: '#ffffff', borderTop: '1px solid #ccc' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', padding: '15px', backgroundColor: '#f4f4f4', borderTop: '1px solid #cccccc' }}>
                 <TextField
                     fullWidth
                     variant="outlined"
@@ -93,9 +93,16 @@ function Chat() {
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()} // Send message on Enter key
-                    sx={{ mr: 2 }}
+                    sx={{
+                        mr: 2,
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': { borderColor: '#cccccc' },
+                            '&:hover fieldset': { borderColor: '#005f99' },
+                            '&.Mui-focused fieldset': { borderColor: '#005f99' },
+                        },
+                    }}
                 />
-                <IconButton color="primary" onClick={handleSendMessage}>
+                <IconButton color="primary" onClick={handleSendMessage} sx={{ padding: '10px' }}>
                     <SendIcon />
                 </IconButton>
             </Box>

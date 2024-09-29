@@ -43,12 +43,8 @@ function HomePage() {
                         border: '1px solid #cccccc', // Soft border to match login form
                     }}
                 >
-                    <Typography variant="h5" sx={{ marginBottom: 2, color: '#005f99', fontWeight: 'bold' }}>
-                        Welcome to TaxYeah!
-                    </Typography>
-
-                    <Typography variant="body1" sx={{ marginBottom: 4, color: '#666666', textAlign: 'center' }}>
-                        Please choose an option below to get started.
+                    <Typography variant="h5" sx={{ marginBottom: 20, color: '#005f99', fontWeight: 'bold', textAlign: 'center' }}>
+                        Witaj w asystencie podatkowym TaxYeah!
                     </Typography>
 
                     {/* Buttons */}
@@ -74,7 +70,7 @@ function HomePage() {
                                 },
                             }}
                         >
-                            Log In
+                            Zaloguj się
                         </Button>
 
                         <Button
@@ -91,7 +87,7 @@ function HomePage() {
                                 },
                             }}
                         >
-                            Chat
+                            Asystent AI
                         </Button>
                     </Box>
 
@@ -99,8 +95,8 @@ function HomePage() {
                     <Divider sx={{ width: '100%', marginTop: '20px', borderBottomWidth: '1px', borderColor: '#cccccc' }} />
 
                     {/* Footer */}
-                    <Typography variant="body2" sx={{ marginTop: '20px', color: '#666666' }}>
-                        Need help? Visit our FAQ or contact support.
+                    <Typography variant="body2" sx={{ marginTop: '20px', color: '#666666', textAlign: 'center' }}>
+                        Potrzebujesz pomocy? Odwiedź naszą stronę FAQ lub skontaktuj się z supportem.
                     </Typography>
                 </Paper>
             </Container>
