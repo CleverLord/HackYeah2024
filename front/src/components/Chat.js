@@ -6,15 +6,19 @@ import axios from 'axios';
 function Chat() {
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
+    const [sessionId, setSessionId] = useState(1); // Assuming you already have session-id initialized (use a default or fetched value)
+    const [isEnd, setIsEnd] = useState(false); // To store if 'end': true is found
+    const [xmlFile, setXmlFile] = useState(null); // To store XML file content
 
     // API Endpoints
-    const conversationEndpoint = 'http://192.168.137.1:8000/conversation/';
+    const finalEndpoint = 'http://192.168.137.1:8000/final/';
+    const templateEndpoint = 'http://192.168.137.1:8000/get-template'; // To get the XML file
 
-    // Function to send user message and use session-id
+    // Function to send user message and post to the backend with session-id
     const handleSendMessage = async () => {
         if (inputMessage.trim() === '') return;
 
-        // Add user's message to the chat
+        // Add user's message to the chat display
         const userMessage = {
             text: inputMessage,
             sender: 'user',
@@ -24,21 +28,62 @@ function Chat() {
         setInputMessage(''); // Clear input field
 
         try {
-            // Get session-id from localStorage
-            const sessionId = localStorage.getItem('session-id');
-
-            // Prepare the formatted request body
+            // Prepare the formatted request body with session-id and message
             const requestBody = {
-                session_id: sessionId,
-                body: inputMessage, // The message content
+                session_id: sessionId, // Use the saved session-id
+                message: inputMessage, // The message content
             };
 
-            // Send the message to the conversation endpoint
-            await axios.post(conversationEndpoint, requestBody);
+            // Send the message to the final endpoint and get the response
+            const response = await axios.post(finalEndpoint, requestBody);
+            console.log('Message sent successfully:', response.data);
+
+            // Extract the server's user_response (which seems to be the correct message field)
+            const serverResponse = response.data.user_response;
+
+            // Split the response in case it has multiple lines (newlines)
+            const serverMessages = serverResponse.split('\n').map((line) => ({
+                text: line,
+                sender: 'server',
+                time: new Date().toLocaleTimeString(),
+            }));
+
+            // Add server's message(s) to the chat display
+            setMessages((prevMessages) => [...prevMessages, ...serverMessages]);
+
+            // Check if 'end': true is received
+            if (response.data.end === true) {
+                setIsEnd(true);
+                fetchTemplate(); // Fetch XML template once 'end': true is received
+            }
 
         } catch (error) {
-            console.error('Error communicating with the backend:', error);
+            console.error('Error sending message:', error);
         }
+    };
+
+    // Function to fetch XML file once 'end': true is received
+    const fetchTemplate = async () => {
+        try {
+            const response = await axios.get(templateEndpoint, { responseType: 'blob' }); // Request the XML as a blob
+            setXmlFile(response.data); // Store the XML file
+            console.log('Template fetched successfully.');
+        } catch (error) {
+            console.error('Error fetching XML template:', error);
+        }
+    };
+
+    // Function to download the XML file
+    const downloadXml = () => {
+        if (!xmlFile) return;
+
+        const url = window.URL.createObjectURL(new Blob([xmlFile], { type: 'application/xml' }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'template.xml'); // File name for download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); // Remove the link after download
     };
 
     return (
@@ -106,6 +151,13 @@ function Chat() {
                     <SendIcon />
                 </IconButton>
             </Box>
+
+            {/* Button to download XML template if available */}
+            {isEnd && xmlFile && (
+                <Button variant="contained" color="primary" onClick={downloadXml} sx={{ mt: 2 }}>
+                    Download XML Template
+                </Button>
+            )}
         </Container>
     );
 }
