@@ -8,10 +8,9 @@ function Chat() {
     const [inputMessage, setInputMessage] = useState('');
 
     // API Endpoints
-    const conversationEndpoint = 'http://10.250.194.23:8000/conversation/';
-    const responseEndpoint = 'http://10.250.194.23:8000/conversation-response/';
+    const conversationEndpoint = 'http://192.168.137.1:8000/conversation/';
 
-    // Function to send user message and retrieve real response from the backend
+    // Function to send user message and use session-id
     const handleSendMessage = async () => {
         if (inputMessage.trim() === '') return;
 
@@ -25,19 +24,18 @@ function Chat() {
         setInputMessage(''); // Clear input field
 
         try {
-            // Send the user's message to the backend conversation endpoint
-            await axios.post(conversationEndpoint, { message: inputMessage });
+            // Get session-id from localStorage
+            const sessionId = localStorage.getItem('session-id');
 
-            // After sending the message, fetch the real response from the backend
-            const response = await axios.get(responseEndpoint);
-
-            // Handle the response from the backend and add it to the chat
-            const responseMessage = {
-                text: response.data.message || 'This is the response from the backend.',
-                sender: 'system', // The system or visitor
-                time: new Date().toLocaleTimeString(),
+            // Prepare the formatted request body
+            const requestBody = {
+                session_id: sessionId,
+                body: inputMessage, // The message content
             };
-            setMessages((prevMessages) => [...prevMessages, responseMessage]);
+
+            // Send the message to the conversation endpoint
+            await axios.post(conversationEndpoint, requestBody);
+
         } catch (error) {
             console.error('Error communicating with the backend:', error);
         }
@@ -46,7 +44,7 @@ function Chat() {
     return (
         <Container maxWidth="md" sx={{ mt: 2, backgroundColor: '#f5f5f5', borderRadius: '10px', height: '80vh', display: 'flex', flexDirection: 'column', padding: '0', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
 
-            {/* Header */}
+            {/* Chat Header */}
             <Box sx={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: '#ffffff', borderBottom: '1px solid #ccc' }}>
                 <Avatar src="https://i.pravatar.cc/40?img=1" alt="Visitor" sx={{ marginRight: '10px' }} />
                 <Typography variant="h6">Visitor</Typography>

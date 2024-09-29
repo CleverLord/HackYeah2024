@@ -26,7 +26,7 @@ const theme = createTheme({
 export default function SignIn() {
     const navigate = useNavigate();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
@@ -36,16 +36,24 @@ export default function SignIn() {
             password: data.get('password'),
         };
 
-        // Sending data to the backend
-        axios.post('http://192.168.137.1:8000/start-conversation/', userData)
-            .then((response) => {
-                console.log('Data sent successfully:', response.data);
-                // Navigate to the chat page after successful submission
-                navigate('/chat');
-            })
-            .catch((error) => {
-                console.error('Error sending data:', error);
-            });
+        try {
+            // First, send the login request to get the session-id
+            const response = await axios.post('http://192.168.137.1:8000/start-conversation/', userData);
+
+            // Extract session-id from the response
+            const sessionId = response.data['session-id'];
+
+            // Save the session-id in localStorage to use it in the chat page
+            localStorage.setItem('session-id', sessionId);
+
+            console.log('Session ID:', sessionId);
+
+            // Navigate to the chat page after successful login
+            navigate('/chat');
+
+        } catch (error) {
+            console.error('Error during login or fetching session-id:', error);
+        }
     };
 
     return (
@@ -64,7 +72,7 @@ export default function SignIn() {
                         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)', // Soft shadow
                     }}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}> {/* Red accent in Avatar */}
+                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5" sx={{ color: '#333' }}>
@@ -110,7 +118,7 @@ export default function SignIn() {
                             }}
                         />
                         <FormControlLabel
-                            control={<Checkbox value="remember" sx={{ color: '#d32f2f' }} />} // Red checkbox
+                            control={<Checkbox value="remember" sx={{ color: '#d32f2f' }} />}
                             label="Remember me"
                             sx={{ color: '#333' }}
                         />
