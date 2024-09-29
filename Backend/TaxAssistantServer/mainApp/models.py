@@ -25,7 +25,7 @@ class UserMessage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Message {self.message_id} for Session {self.session_id}"
+        return f"Message {self.message_id} for Session {self.session}"
 
 class ChatBotMessage(models.Model):
     message_id = models.AutoField(primary_key=True)
@@ -36,4 +36,4 @@ class ChatBotMessage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"ChatBot Message {self.message_id} for Session {self.session_id}"
+        return f"ChatBot Message {self.message_id} for Session {self.session}"
