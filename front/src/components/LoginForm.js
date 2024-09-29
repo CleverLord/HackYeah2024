@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, Grid, Box, Typography, Container, Alert } from '@mui/material';
+import { Avatar, Button, CssBaseline, TextField, Box, Typography, Container, Alert, Paper, Divider } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FormControlLabel, Checkbox } from '@mui/material';
 
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#1976d2',
+            main: '#005f99', // Subtle blue used in the reference page
         },
         secondary: {
-            main: '#d32f2f',
+            main: '#d32f2f', // Error or secondary color
         },
         background: {
             default: '#ffffff',
@@ -69,110 +70,109 @@ export default function SignIn() {
 
     return (
         <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="sm">
                 <CssBaseline />
-                <Box
+                <Paper
+                    elevation={3}
                     sx={{
+                        padding: '40px 30px',
                         marginTop: 8,
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        padding: '30px',
-                        backgroundColor: '#f9f9f9',
-                        borderRadius: '15px',
-                        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                        backgroundColor: '#f4f4f4', // Subtle light background to match the reference
+                        borderRadius: '8px',
+                        border: '1px solid #cccccc', // Soft border for the form
                     }}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
                         <LockOutlinedIcon />
                     </Avatar>
-                    <Typography component="h1" variant="h5" sx={{ color: '#333' }}>
-                        Zaloguj się
+                    <Typography component="h1" variant="h5" sx={{ marginBottom: 2 }}>
+                        Log in to your account
                     </Typography>
 
-                    {loginError && <Alert severity="error" sx={{ mt: 2, width: '100%' }}>{errorMessage}</Alert>}
+                    {/* Error alert for login issues */}
+                    {loginError && (
+                        <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
+                            {errorMessage}
+                        </Alert>
+                    )}
 
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
+                    {/* Form begins here */}
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ width: '100%' }}>
+                        <Typography variant="body1" gutterBottom sx={{ fontWeight: 'bold', color: '#005f99' }}>
+                            Email Address
+                        </Typography>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
                             id="email"
-                            label="Email Address"
                             name="email"
                             autoComplete="email"
-                            autoFocus
                             error={emailError}
-                            helperText={emailError && "Email is required"}
-                            InputLabelProps={{ style: { color: '#333' } }}
+                            helperText={emailError && 'Email is required'}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
-                                    '& fieldset': { borderColor: emailError ? '#d32f2f' : '#cccccc' },
-                                    '&:hover fieldset': { borderColor: '#1976d2' },
-                                    '&.Mui-focused fieldset': { borderColor: '#1976d2' },
+                                    '& fieldset': { borderColor: '#cccccc' },
+                                    '&:hover fieldset': { borderColor: '#005f99' },
+                                    '&.Mui-focused fieldset': { borderColor: '#005f99' },
                                 },
-                                input: { color: '#333' },
+                                backgroundColor: '#ffffff', // White input background
                             }}
                         />
+                        <Typography variant="body1" gutterBottom sx={{ fontWeight: 'bold', color: '#005f99', mt: 2 }}>
+                            Password
+                        </Typography>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
                             name="password"
-                            label="Password"
                             type="password"
                             id="password"
                             autoComplete="current-password"
                             error={passwordError}
-                            helperText={passwordError && "Password is required"}
-                            InputLabelProps={{ style: { color: '#333' } }}
+                            helperText={passwordError && 'Password is required'}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
-                                    '& fieldset': { borderColor: passwordError ? '#d32f2f' : '#cccccc' },
-                                    '&:hover fieldset': { borderColor: '#1976d2' },
-                                    '&.Mui-focused fieldset': { borderColor: '#1976d2' },
+                                    '& fieldset': { borderColor: '#cccccc' },
+                                    '&:hover fieldset': { borderColor: '#005f99' },
+                                    '&.Mui-focused fieldset': { borderColor: '#005f99' },
                                 },
-                                input: { color: '#333' },
+                                backgroundColor: '#ffffff',
                             }}
                         />
+
+                        {/* Remember Me Checkbox */}
                         <FormControlLabel
-                            control={<Checkbox value="remember" sx={{ color: '#d32f2f' }} />}
+                            control={<Checkbox value="remember" sx={{ color: '#005f99' }} />}
                             label="Remember me"
                             sx={{ color: '#333' }}
                         />
+
+                        <Divider sx={{ my: 2 }} />
+
+                        {/* Login Button */}
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{
-                                mt: 3,
-                                mb: 2,
-                                backgroundColor: '#1976d2',
+                                backgroundColor: '#005f99',
                                 color: '#ffffff',
-                                borderRadius: '30px',
-                                padding: '10px 20px',
-                                fontSize: '16px',
+                                padding: '12px 20px',
+                                fontWeight: 'bold',
                                 '&:hover': {
-                                    backgroundColor: '#115293',
+                                    backgroundColor: '#004080',
                                 },
                             }}
                         >
-                            Sign In
+                            Log in
                         </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2" sx={{ color: '#1976d2' }}>
-                                    Forgot password?
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <Link href="#" variant="body2" sx={{ color: '#1976d2' }}>
-                                    {"Don't have an account? Sign Up"}
-                                </Link>
-                            </Grid>
-                        </Grid>
                     </Box>
-                </Box>
+                </Paper>
             </Container>
         </ThemeProvider>
     );
